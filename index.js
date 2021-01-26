@@ -1,13 +1,49 @@
-/* Your Code Here */
+let createEmployeeRecord = function(employee) {
+    return {
+        firstName: employee[0],
+        familyName: employee[1],
+        title: employee[2],
+        payPerHour: employee[3],
+        timeInEvents: [],
+        timeOutEvents: []
+    }
+}
 
-/*
- We're giving you this function. Take a look at it, you might see some usage
- that's new and different. That's because we're avoiding a well-known, but
- sneaky bug that we'll cover in the next few lessons!
+let createEmployeeRecords = function(employees) {
+    return employees.map(employee => createEmployeeRecord(employee))
+}
 
- As a result, the lessons for this function will pass *and* it will be available
- for you to use if you need it!
- */
+let createTimeInEvent = function(dateStamp) {
+    let dateArr = dateStamp.split(' ')
+    this.timeInEvents.push({
+        type: "TimeIn",
+        hour: parseInt(dateArr[1]),
+        date: dateArr[0]
+    })
+    return this
+}
+
+let createTimeOutEvent = function(dateStamp) {
+    let dateArr = dateStamp.split(' ')
+    this.timeOutEvents.push({
+        type: "TimeOut",
+        hour: parseInt(dateArr[1]),
+        date: dateArr[0]
+    })
+    return this
+}
+
+let hoursWorkedOnDate = function(dateStamp) {
+    let clockOut = this.timeOutEvents.find(shift => shift.date === dateStamp).hour
+    let clockIn = this.timeInEvents.find(shift => shift.date === dateStamp).hour
+    return (clockOut - clockIn) / 100
+
+}
+
+let wagesEarnedOnDate = function(dateStamp) {
+    let hoursWorked = hoursWorkedOnDate.call(this, dateStamp) 
+    return hoursWorked * this.payPerHour
+}
 
 let allWagesFor = function () {
     let eligibleDates = this.timeInEvents.map(function (e) {
@@ -19,4 +55,16 @@ let allWagesFor = function () {
     }.bind(this), 0) // <== Hm, why did we need to add bind() there? We'll discuss soon!
 
     return payable
+}
+
+let findEmployeeByFirstName = function(employees, name) {
+    return employees.find(employee => employee.firstName === name)
+}
+
+let calculatePayroll = function(employees) {
+    let total = 0
+    for (let i = 0; i < employees.length; i ++) {
+        total += allWagesFor.call(employees[i])
+    }
+    return total
 }
